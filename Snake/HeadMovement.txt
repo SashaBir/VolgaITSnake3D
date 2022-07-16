@@ -1,0 +1,64 @@
+using System;
+using System.Collections;
+using UnityEngine;
+
+namespace Assets.Project.Physics
+{
+    [Serializable]
+    public class HeadMovement
+    {
+        [SerializeField] private SurfaceSlider _surfaceSlider;
+        [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private Vector3 _direction;
+        [SerializeField] private float _speed;
+
+        public event Action<Transform> OnMoved = delegate { };
+        
+        public event Action<Vector3> OnTurned = delegate { };
+
+        public float Speed => _speed;
+
+        public void Move()
+        {
+            Vector3 directionAlongSurface = _surfaceSlider.Project(ref _direction);
+            Vector3 offset = directionAlongSurface * (_speed * Time.fixedDeltaTime);
+            
+            _rigidbody.MovePosition(_rigidbody.position + offset);
+            
+            OnMoved.Invoke(_rigidbody.gameObject.transform);
+        }
+
+        public void MoveLeft()
+        {
+            if (_direction == Vector3.forward)
+                _direction = Vector3.left;
+            else if (_direction == Vector3.left)
+                _direction = Vector3.back;
+            else if (_direction == Vector3.back)
+                _direction = Vector3.right;
+            else if (_direction == Vector3.right)
+                _direction = Vector3.forward;
+
+            OnTurned.Invoke(_direction);
+        }
+
+        public void MoveRight()
+        {
+            if (_direction == Vector3.forward)
+                _direction = Vector3.right;
+            else if (_direction == Vector3.right)
+                _direction = Vector3.back;
+            else if (_direction == Vector3.back)
+                _direction = Vector3.left;
+            else if (_direction == Vector3.left)
+                _direction = Vector3.forward;
+
+            OnTurned.Invoke(_direction);
+        }
+
+        private Vector3 CalculateDirectionByAlongSurface(Vector3 a)
+        {
+            return default;
+        }
+    }
+}

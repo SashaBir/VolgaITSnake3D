@@ -1,2 +1,2 @@
 # VolgaITSnake3D
-For Volga IT contest.
+For Volga IT competition.

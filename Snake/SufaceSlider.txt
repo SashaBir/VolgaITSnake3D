@@ -1,0 +1,221 @@
+using System;
+using UnityEngine;
+
+namespace Assets.Project.Physics
+{
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Collider))]
+    public class SurfaceSlider : MonoBehaviour
+    {
+        private SurfaceDetector _detector;
+        
+        private Vector3 _normal = Vector3.zero;
+        private Vector3 _last = Vector3.zero;
+
+        private bool _isTouched = false;
+        
+        private void Awake()
+        {
+            _detector = new SurfaceDetector(transform);
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            _normal = collision.contacts[0].normal;
+            _isTouched = true;
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            _isTouched = false;
+        }
+
+        public Vector3 Project(ref Vector3 direction)
+        {
+            /*
+             * Vector3.left = -1, 0, 0
+             * Vector3.right = 1, 0, 0
+             * Vector3.forward = 0, 0, 1
+             * Vector3.back = 0, 0, -1
+             * Vector3.down = 0, -1, 0
+             * Vector3.up = 0, 1, 0
+             */
+            
+            /*
+            if (_isTouched == false)
+            {
+                if (_normal == Vector3.down)
+                {
+                    if (direction == Vector3.right)
+                    {
+                        Debug.Log(direction + " dwadaw");
+                        return Vector3.up;
+                    }
+                }
+            }
+            */
+            
+            if (_normal == Vector3.up)
+            {
+                _last = _normal;
+                return direction;
+            }
+
+            if (_normal == Vector3.down)
+            {
+                _last = _normal;
+                return -direction;
+            } 
+
+            if (_normal == Vector3.forward)
+            {
+                if (_last == Vector3.right)
+                {
+                    _last = _normal;
+                    direction = Vector3.right;
+                    return Vector3.right;
+                }
+                if (_last == Vector3.left)
+                {
+                    _last = _normal;
+                    direction = Vector3.left;
+                    return Vector3.left;
+                }
+                
+                _last = _normal;
+                
+                Debug.Log("forward");
+
+                if (direction == Vector3.back)
+                {
+                    return Vector3.up;
+                }
+                if (direction == Vector3.left)
+                {
+                    return Vector3.left;
+                }
+                if (direction == Vector3.forward)
+                {
+                    return Vector3.down;
+                }
+                else
+                {
+                    return Vector3.right;
+                }
+            }
+            
+            if (_normal == Vector3.back)
+            {
+                if (_last == Vector3.right)
+                {
+                    _last = _normal;
+                    direction = Vector3.right;
+                    return Vector3.right;
+                }
+                if (_last == Vector3.left)
+                {
+                    _last = _normal;
+                    direction = Vector3.left;
+                    return Vector3.left;
+                }
+                
+                _last = _normal;
+                
+                Debug.Log("back");
+                
+                if (direction == Vector3.forward)
+                {
+                    return Vector3.up;
+                }
+                if (direction == Vector3.right)
+                {
+                    return Vector3.right;
+                }
+                if (direction == Vector3.back)
+                {
+                    return Vector3.down;
+                }
+                else
+                {
+                    return Vector3.left;
+                }
+            }
+            
+            if (_normal == Vector3.left)
+            {
+                if (_last == Vector3.forward)
+                {
+                    _last = _normal;
+                    direction = Vector3.forward;
+                    return Vector3.forward;
+                }
+                if (_last == Vector3.back)
+                {
+                    _last = _normal;
+                    direction = Vector3.back;
+                    return Vector3.back;
+                }
+                
+                _last = _normal;
+                
+                Debug.Log("left");
+                
+                if (direction == Vector3.forward)
+                {
+                    return Vector3.forward;
+                }
+                if (direction == Vector3.left)
+                {
+                    return Vector3.down;
+                }
+                if (direction == Vector3.back)
+                {
+                    return Vector3.back;
+                }
+                else
+                {
+                    return Vector3.up;
+                }
+            }
+            
+            if (_normal == Vector3.right)
+            {
+                if (_last == Vector3.back)
+                {
+                    _last = _normal;
+                    direction = Vector3.back;
+                    return Vector3.back;
+                }
+                if (_last == Vector3.forward)
+                {
+                    _last = _normal;
+                    direction = Vector3.forward;
+                    return Vector3.forward;
+                }
+                
+                _last = _normal;
+                
+                Debug.Log("right");
+                
+                if (direction == Vector3.left)
+                {
+                    return Vector3.up;
+                }
+                if (direction == Vector3.forward)
+                {
+                    return Vector3.forward;
+                }
+                if (direction == Vector3.right)
+                {
+                    return Vector3.down;
+                }
+                else
+                {
+                    return Vector3.back;
+                }
+            }
+            
+            return Vector3.zero;
+        }
+    }
+}
